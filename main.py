@@ -326,7 +326,7 @@ for signNum, key in enumerate(outputDict):
 			try:
 				htmldownload(tempDirectory + "/" + filename + ".html", sepOpi['link'])
 			except:
-				pLogger('log.txt',False, "[ERROR] File {0} could not be saved. Please download it manually via: {2}".format(filename,sepOpi['link']))
+				pLogger('log.txt',False, "[ERROR] File {0} could not be saved. Please download it manually via: {1}".format(filename,sepOpi['link']))
 				continue
 
 	for case in outputDict[key]:

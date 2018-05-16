@@ -1,0 +1,3 @@
+2018-05-16 17:18:28 [DEBUG] Drivers located!
+2018-05-16 17:18:28 [DEBUG] Opening webpage: http://ipo.trybunal.gov.pl/ipo/Szukaj
+2018-05-16 17:18:34 [DEBUG] Page loaded! http://ipo.trybunal.gov.pl/ipo/Szukaj

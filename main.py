@@ -73,6 +73,9 @@ import json
 import collections
 import os
 import sys
+import timeit
+import datetime
+from datetime import timedelta
 from functions import *
 pLoggerInit()
 
@@ -297,12 +300,15 @@ pLogger('log.txt', True, '[DEBUG] FINALIZED STEP 3/4, found 5 most active judges
 # similar one-line to the pdf download, for enhanced code readability.
 
 pLogger('log.txt', True, '[DEBUG] Starting download of the files')
+startedDownloadTime = timeit.default_timer()
 
 for signNum, key in enumerate(outputDict):
 	obj = outputDict[key][0]
 	#Every 25 downloaded cases we inform about our progress
-	if signNum % 25 == 0 and signNum > 0:
-		pLogger('log.txt', True, '[DEBUG] Succesfully downloaded {0} file(s)!'.format(signNum))
+	if signNum % 25 == 0 and signNum > 0 :
+		nowTime = timeit.default_timer()
+		estimatedFinishTime = datetime.datetime.now()+timedelta(seconds=(((nowTime - startedDownloadTime) / signNum) * (len(outputDict) - signNum)))
+		pLogger('log.txt', True, '[DEBUG] Succesfully downloaded {0} file(s)! Estimated finish time: {1}'.format(signNum,estimatedFinishTime))
 
 	#First we create the output directory
 	outputDirectory = mainOutputDirectory + str(key).replace("/", "_").replace(" ", "_")
@@ -319,27 +325,28 @@ for signNum, key in enumerate(outputDict):
 		#Loop through all seperate opinions to download them
 		for n, sepOpi in enumerate(separate_opinions):
 			filename = (str(n) + "_" + key + "_" + ''.join(sepOpi['by']).replace(' ','_')).replace("/", "_").replace(" ", "_")
+			sys.stdout = open(os.devnull, 'w')
+			pdfkit.from_url(sepOpi['link'], tempDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
+			sys.stdout = sys.__stdout__
 			if isPDFOutput:
-				sys.stdout = open(os.devnull, 'w')
-				pdfkit.from_url(sepOpi['link'], tempDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
-				sys.stdout = sys.__stdout__
-			try:
-				htmldownload(tempDirectory + "/" + filename + ".html", sepOpi['link'])
-			except:
-				pLogger('log.txt',False, "[ERROR] File {0} could not be saved. Please download it manually via: {1}".format(filename,sepOpi['link']))
-				continue
+				try:
+					htmldownload(tempDirectory + "/" + filename + ".html", sepOpi['link'])
+				except:
+					pLogger('log.txt',False, "[ERROR] File {0} could not be saved. Please download it manually via: {1}".format(filename,sepOpi['link']))
+					continue
 
 	for case in outputDict[key]:
 
 		#Finally download the case itself
 		filename = (str(case['id'])+str(key)).replace("/", "_").replace(" ", "_")
+		sys.stdout = open(os.devnull, 'w')
+		pdfkit.from_url(case['link'], outputDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
+		sys.stdout = sys.__stdout__
 		if isPDFOutput:
-			sys.stdout = open(os.devnull, 'w')
-			pdfkit.from_url(case['link'], outputDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
-			sys.stdout = sys.__stdout__
-		try:
-			htmldownload(outputDirectory + "/" + filename + ".html", case['link'])
-		except:
-			continue
+			try:
+				htmldownload(outputDirectory + "/" + filename + ".html", case['link'])
+			except:
+				continue
+	time.sleep(5)
 
 pLogger('log.txt', True, '[DEBUG] FINALIZED STEP 4/4, saved all files')

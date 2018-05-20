@@ -62,10 +62,10 @@ def htmldownload(filename,url):
 	pass
 
 def check(filename):
-	#Function returns False if word "aplikacji" isn't found inside the file
+	#Function returns False if word "java" isn't found inside the file
 	#Returns true otherwise. The word appears in the error code "Nieoczekiwany
 	#błąd aplikacji" which signalizes an issue
 	
-	if (open(filename, 'r', encoding='UTF-8').read().find('aplikacji')) == -1:
+	if (open(filename, 'r', encoding='UTF-8').read().find('java')) > 1:
 		return False
 	return True

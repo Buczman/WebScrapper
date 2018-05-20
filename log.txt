@@ -1,3 +1,7 @@
-2018-05-16 17:18:28 [DEBUG] Drivers located!
-2018-05-16 17:18:28 [DEBUG] Opening webpage: http://ipo.trybunal.gov.pl/ipo/Szukaj
-2018-05-16 17:18:34 [DEBUG] Page loaded! http://ipo.trybunal.gov.pl/ipo/Szukaj
+2018-05-20 19:07:28 [DEBUG] Drivers located!
+2018-05-20 19:07:28 [DEBUG] Opening webpage: http://ipo.trybunal.gov.pl/ipo/Szukaj
+2018-05-20 19:07:28 [DEBUG] Page loaded! http://ipo.trybunal.gov.pl/ipo/Szukaj
+2018-05-20 19:07:29 [DEBUG] Filtering done using options: Diagnosis stage: Proper diagnosis stage, Time Range: Since 16.10.1997!
+2018-05-20 19:07:30 [DEBUG] Achieved maximum objects per page: 500
+2018-05-20 19:07:41 [DEBUG] Looping over page num:1, scraped 500 objects
+2018-05-20 19:07:52 [DEBUG] Looping over page num:2, scraped 1000 objects

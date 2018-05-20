@@ -67,6 +67,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.options import Options
 import time
 import pdfkit
 import json
@@ -75,6 +76,7 @@ import os
 import sys
 import timeit
 import datetime
+from progress.bar import IncrementalBar
 from datetime import timedelta
 from functions import *
 pLoggerInit()
@@ -86,6 +88,8 @@ pLoggerInit()
 outputDict = {} # output dict
 pageCount=0
 objectCount=0
+sepPageCount=0
+sepObjectCount=0
 
 #####################################################
 # PARAMETRIZATION
@@ -96,17 +100,20 @@ jurisdictionURL = 'http://ipo.trybunal.gov.pl/ipo/Szukaj'
 sepOpinionURL = 'http://ipo.trybunal.gov.pl/ipo/SzukajZO'
 mainOutputDirectory = "output/"
 
+# True - print also PDF versions of pages, False (default) - no PDF output
+isPDFOutput = False
+
 try:
-	driver = webdriver.Firefox(executable_path = 'C:\Gecko\geckodriver.exe') # defining main driver object, using Firefox browser as default
-	pathwkthmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'	 # defining wkthtml driver
-	PDFconfig = pdfkit.configuration(wkhtmltopdf=pathwkthmltopdf)
+	options = Options()
+	options.set_headless(headless=True)
+	driver = webdriver.Firefox(firefox_options=options, executable_path = 'C:\Gecko\geckodriver.exe') # defining main driver object, using Firefox browser as default
+	if isPDFOutput:
+		pathwkthmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'	 # defining wkthtml driver
+		PDFconfig = pdfkit.configuration(wkhtmltopdf=pathwkthmltopdf)
 except:
 	pLogger('log.txt', True, '[ERROR] Drivers not located!')
 	raise
 wait = WebDriverWait(driver, 30)										 # defining wait object with timeout of 30 s
-
-# True - print also PDF versions of pages, False (default) - no PDF output
-isPDFOutput = False
 
 #initializing logger
 
@@ -233,9 +240,6 @@ pLogger('log.txt', True, '[DEBUG] Opening webpage: ', sepOpinionURL)
 driver.get(sepOpinionURL)
 pLogger('log.txt', True, '[DEBUG] Page loaded! ', sepOpinionURL)
 
-pageCount = 0
-objectCount = 0
-
 while True:
 	# hardcoded 0.5s so we are sure that the model showed up (and fortunately hidden)
 	time.sleep(0.5)
@@ -252,22 +256,22 @@ while True:
 			link_ = link.get_attribute('href') #for each link we get a direct hyperlink
 			allAuthors = [x.text for x in separateOpinionsAuthors[n].find_elements_by_tag_name('dt')] #we get all the authors of a single separate opinion
 			outputDict[link.text][0]['sep_opi'].append({'link' : link_, 'by' :allAuthors})
-			objectCount+=1
+			sepObjectCount+=1
 			
 
 	nextPage = driver.find_element_by_class_name("ui-paginator-next") #page'
 	nextPageClasses = nextPage.get_attribute('class')
-	pLogger('log.txt', True, "[DEBUG] Looping over page num:", str(pageCount + 1), ', scraped ', str(objectCount), ' separate opinion(s)')
+	pLogger('log.txt', True, "[DEBUG] Looping over page num:", str(sepPageCount + 1), ', scraped ', str(sepObjectCount), ' separate opinion(s)')
 	if 'ui-state-disabled' in nextPageClasses: #if button is not clickable it means we are at last page and can break
 		break
 
-	pageCount+=1
+	sepPageCount+=1
 	nextPage.click()
 
 pLogger('log.txt', True, '[DEBUG] FINALIZED STEP 2/4, searched for all separate opinions')
 
 # We are closing the driver as all other operations are don without its use
-driver.close()
+# driver.close()
 
 #####################################################
 # JUDGES ACTIVITY
@@ -300,16 +304,24 @@ pLogger('log.txt', True, '[DEBUG] FINALIZED STEP 3/4, found 5 most active judges
 # similar one-line to the pdf download, for enhanced code readability.
 
 pLogger('log.txt', True, '[DEBUG] Starting download of the files')
-startedDownloadTime = timeit.default_timer()
+# startedDownloadTime = timeit.default_timer()
+# linksWithErrors=[]
+objToDownload = sepObjectCount + objectCount
+objDownloaded = 0
+bar = IncrementalBar('Downloading files', max = objToDownload, suffix = '%(percent).1f%% - %(eta)ds')
 
-for signNum, key in enumerate(outputDict):
+
+for key in outputDict:
 	obj = outputDict[key][0]
 	#Every 25 downloaded cases we inform about our progress
-	if signNum % 25 == 0 and signNum > 0 :
-		nowTime = timeit.default_timer()
-		estimatedFinishTime = datetime.datetime.now()+timedelta(seconds=(((nowTime - startedDownloadTime) / signNum) * (len(outputDict) - signNum)))
-		pLogger('log.txt', True, '[DEBUG] Succesfully downloaded {0} file(s)! Estimated finish time: {1}'.format(signNum,estimatedFinishTime))
-
+	if objDownloaded % 25 == 0 and objDownloaded > 0 :
+		# nowTime = timeit.default_timer()
+		# estimatedFinishTime = datetime.datetime.now()+timedelta(seconds=(((nowTime - startedDownloadTime) / objDownloaded) * (objToDownload - objDownloaded)))
+		# pLogger('log.txt', True, '[DEBUG] Succesfully downloaded {0} file(s)! Estimated finish time: {1}'.format(signNum,estimatedFinishTime))
+		# we are quitting driver to start a new session
+		driver.quit()
+		driver = webdriver.Firefox(firefox_options=options, executable_path = 'C:\Gecko\geckodriver.exe')
+	
 	#First we create the output directory
 	outputDirectory = mainOutputDirectory + str(key).replace("/", "_").replace(" ", "_")
 	if not os.path.exists(outputDirectory):
@@ -324,29 +336,40 @@ for signNum, key in enumerate(outputDict):
 
 		#Loop through all seperate opinions to download them
 		for n, sepOpi in enumerate(separate_opinions):
-			filename = (str(n) + "_" + key + "_" + ''.join(sepOpi['by']).replace(' ','_')).replace("/", "_").replace(" ", "_")
-			sys.stdout = open(os.devnull, 'w')
-			pdfkit.from_url(sepOpi['link'], tempDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
-			sys.stdout = sys.__stdout__
+			filename = (str(n) + str(obj['id']) + "_" + key + "_" + ''.join(sepOpi['by']).replace(' ','_')).replace("/", "_").replace(" ", "_")
+		
+			try:
+				driverdownload(driver, tempDirectory + "/" + filename + ".html", sepOpi['link'])
+			except:
+				pLogger('log.txt',False, "[ERROR] File {0} could not be saved. Please download it manually via: {1}".format(filename,sepOpi['link']))
+				continue
+			
 			if isPDFOutput:
-				try:
-					htmldownload(tempDirectory + "/" + filename + ".html", sepOpi['link'])
-				except:
-					pLogger('log.txt',False, "[ERROR] File {0} could not be saved. Please download it manually via: {1}".format(filename,sepOpi['link']))
-					continue
+				sys.stdout = open(os.devnull, 'w')
+				pdfkit.from_file(tempDirectory + "/" + filename + ".html", tempDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
+				sys.stdout = sys.__stdout__
+				
+			objDownloaded+=1
+			bar.next()
 
 	for case in outputDict[key]:
 
 		#Finally download the case itself
 		filename = (str(case['id'])+str(key)).replace("/", "_").replace(" ", "_")
-		sys.stdout = open(os.devnull, 'w')
-		pdfkit.from_url(case['link'], outputDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
-		sys.stdout = sys.__stdout__
+
+		try:
+			driverdownload(driver, outputDirectory + "/" + filename + ".html", case['link'])
+		except:
+			pLogger('log.txt',False, "[ERROR] File {0} could not be saved. Please download it manually via: {1}".format(filename,case['link']))
+			continue
+			
 		if isPDFOutput:
-			try:
-				htmldownload(outputDirectory + "/" + filename + ".html", case['link'])
-			except:
-				continue
-	time.sleep(5)
+			sys.stdout = open(os.devnull, 'w')
+			pdfkit.from_file(outputDirectory + "/" + filename + ".html", outputDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
+			sys.stdout = sys.__stdout__		
+		
+		objDownloaded+=1
+		bar.next()
+bar.finish()
 
 pLogger('log.txt', True, '[DEBUG] FINALIZED STEP 4/4, saved all files')

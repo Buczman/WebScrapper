@@ -33,14 +33,24 @@ def pLoggerInit(filename = 'log.txt'):
 		os.remove(filename)
 
 def driverdownload(driver,filename,url):
+	#The function will download a given file (from url) and save it with given
+	#filename, using the selenium webdriver method. It is slower, but should
+	#produce less errors (if we requests files to fast, the server responds
+	#with errors more often, maybe because of some kind of flood protection)
+
 	driver.get(url)
+	time.sleep(0.5)
+	WebDriverWait(driver, 30).until_not(EC.visibility_of_element_located((By.ID, "j_idt24_modal")))
 	page = driver.page_source
-	file_ = open(filename, 'w+')
+	file_ = open(filename, 'w+', encoding='utf-8')
 	file_.write(page)
 	file_.close()
+	time.sleep(1.5)
 	pass
 
 def htmldownload(filename,url):
+	#This uses the requests/urllib approach to downloading files.
+
 	req=urllib.request.Request(url, None, {'User-Agent': 'Mozilla/5.0 (X11; Linux i686; G518Rco3Yp0uLV40Lcc9hAzC1BOROTJADjicLjOmlr4=) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36','Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3','Accept-Encoding': 'gzip, deflate, sdch','Accept-Language': 'en-US,en;q=0.8','Connection': 'keep-alive'})
 	cookieJar = CookieJar()
 	opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cookieJar))
@@ -50,3 +60,12 @@ def htmldownload(filename,url):
 		fid.write(rawResponse)
 	response.close()
 	pass
+
+def check(filename):
+	#Function returns False if word "aplikacji" isn't found inside the file
+	#Returns true otherwise. The word appears in the error code "Nieoczekiwany
+	#błąd aplikacji" which signalizes an issue
+	
+	if (open(filename, 'r', encoding='UTF-8').read().find('aplikacji')) == -1:
+		return False
+	return True

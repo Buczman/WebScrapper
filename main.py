@@ -76,6 +76,7 @@ import os
 import sys
 import timeit
 import datetime
+import glob
 from progress.bar import IncrementalBar
 from datetime import timedelta
 from functions import *
@@ -308,16 +309,14 @@ pLogger('log.txt', True, '[DEBUG] Starting download of the files')
 # linksWithErrors=[]
 objToDownload = sepObjectCount + objectCount
 objDownloaded = 0
-bar = IncrementalBar('Downloading files', max = objToDownload, suffix = '%(percent).1f%% - %(eta)ds')
+
+bar = IncrementalBar('Downloading files', max = objToDownload, suffix = '%(index)4d/%(max)4d | %(eta_td)s hours remaining')
 
 
 for key in outputDict:
 	obj = outputDict[key][0]
 	#Every 25 downloaded cases we inform about our progress
 	if objDownloaded % 25 == 0 and objDownloaded > 0 :
-		# nowTime = timeit.default_timer()
-		# estimatedFinishTime = datetime.datetime.now()+timedelta(seconds=(((nowTime - startedDownloadTime) / objDownloaded) * (objToDownload - objDownloaded)))
-		# pLogger('log.txt', True, '[DEBUG] Succesfully downloaded {0} file(s)! Estimated finish time: {1}'.format(signNum,estimatedFinishTime))
 		# we are quitting driver to start a new session
 		driver.quit()
 		driver = webdriver.Firefox(firefox_options=options, executable_path = 'C:\Gecko\geckodriver.exe')
@@ -346,7 +345,7 @@ for key in outputDict:
 			
 			if isPDFOutput:
 				sys.stdout = open(os.devnull, 'w')
-				pdfkit.from_file(tempDirectory + "/" + filename + ".html", tempDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
+				pdfkit.from_file(sepOpi['link'], tempDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
 				sys.stdout = sys.__stdout__
 				
 			objDownloaded+=1
@@ -365,7 +364,7 @@ for key in outputDict:
 			
 		if isPDFOutput:
 			sys.stdout = open(os.devnull, 'w')
-			pdfkit.from_file(outputDirectory + "/" + filename + ".html", outputDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
+			pdfkit.from_html(case['link'], outputDirectory + "/" + filename + ".pdf", configuration = PDFconfig)
 			sys.stdout = sys.__stdout__		
 		
 		objDownloaded+=1
@@ -373,3 +372,19 @@ for key in outputDict:
 bar.finish()
 
 pLogger('log.txt', True, '[DEBUG] FINALIZED STEP 4/4, saved all files')
+
+#####################################################
+# FILE CHECK
+#####################################################
+
+files = glob.glob("output/*/*.html") + glob.glob("output/*/*/*.html")
+fileCheck = 0
+fileBad = 0
+
+for file in files:
+	if check(file) == True:
+		pLogger('log.txt', True, '[DEBUG] {} is not downloaded correctly.'.format(file))
+		fileBad+=1
+	else:
+		fileCheck+=1
+pLogger('log.txt', True, '[DEBUG] {} files downloaded not correctly, {} files downloaded correctly.'.format(fileBad,fileCheck))

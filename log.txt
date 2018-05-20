@@ -1,7 +1,54 @@
-2018-05-20 19:07:28 [DEBUG] Drivers located!
-2018-05-20 19:07:28 [DEBUG] Opening webpage: http://ipo.trybunal.gov.pl/ipo/Szukaj
-2018-05-20 19:07:28 [DEBUG] Page loaded! http://ipo.trybunal.gov.pl/ipo/Szukaj
-2018-05-20 19:07:29 [DEBUG] Filtering done using options: Diagnosis stage: Proper diagnosis stage, Time Range: Since 16.10.1997!
-2018-05-20 19:07:30 [DEBUG] Achieved maximum objects per page: 500
-2018-05-20 19:07:41 [DEBUG] Looping over page num:1, scraped 500 objects
-2018-05-20 19:07:52 [DEBUG] Looping over page num:2, scraped 1000 objects
+2018-05-20 21:10:20 [DEBUG] Drivers located!
+2018-05-20 21:10:20 [DEBUG] Opening webpage: http://ipo.trybunal.gov.pl/ipo/Szukaj
+2018-05-20 21:10:21 [DEBUG] Page loaded! http://ipo.trybunal.gov.pl/ipo/Szukaj
+2018-05-20 21:10:23 [DEBUG] Filtering done using options: Diagnosis stage: Proper diagnosis stage, Time Range: Since 16.10.1997!
+2018-05-20 21:10:23 [DEBUG] Achieved maximum objects per page: 500
+2018-05-20 21:10:33 [DEBUG] Looping over page num:1, scraped 500 objects
+2018-05-20 21:10:45 [DEBUG] Looping over page num:2, scraped 1000 objects
+2018-05-20 21:10:57 [DEBUG] Looping over page num:3, scraped 1500 objects
+2018-05-20 21:11:11 [DEBUG] Looping over page num:4, scraped 2000 objects
+2018-05-20 21:11:25 [DEBUG] Looping over page num:5, scraped 2500 objects
+2018-05-20 21:11:27 [DEBUG] Looping over page num:6, scraped 2560 objects
+2018-05-20 21:11:27 [DEBUG] FINALIZED STEP 1/3, scraped 2313 jurisdiction(s) in 2560 object(s)
+2018-05-20 21:11:27 [DEBUG] Opening webpage: http://ipo.trybunal.gov.pl/ipo/SzukajZO
+2018-05-20 21:11:28 [DEBUG] Page loaded! http://ipo.trybunal.gov.pl/ipo/SzukajZO
+2018-05-20 21:11:30 [DEBUG] Looping over page num:1, scraped 23 separate opinion(s)
+2018-05-20 21:11:32 [DEBUG] Looping over page num:2, scraped 46 separate opinion(s)
+2018-05-20 21:11:34 [DEBUG] Looping over page num:3, scraped 68 separate opinion(s)
+2018-05-20 21:11:36 [DEBUG] Looping over page num:4, scraped 93 separate opinion(s)
+2018-05-20 21:11:38 [DEBUG] Looping over page num:5, scraped 116 separate opinion(s)
+2018-05-20 21:11:40 [DEBUG] Looping over page num:6, scraped 140 separate opinion(s)
+2018-05-20 21:11:42 [DEBUG] Looping over page num:7, scraped 164 separate opinion(s)
+2018-05-20 21:11:44 [DEBUG] Looping over page num:8, scraped 188 separate opinion(s)
+2018-05-20 21:11:46 [DEBUG] Looping over page num:9, scraped 212 separate opinion(s)
+2018-05-20 21:11:48 [DEBUG] Looping over page num:10, scraped 235 separate opinion(s)
+2018-05-20 21:11:50 [DEBUG] Looping over page num:11, scraped 260 separate opinion(s)
+2018-05-20 21:11:52 [DEBUG] Looping over page num:12, scraped 284 separate opinion(s)
+2018-05-20 21:11:54 [DEBUG] Looping over page num:13, scraped 308 separate opinion(s)
+2018-05-20 21:11:56 [DEBUG] Looping over page num:14, scraped 333 separate opinion(s)
+2018-05-20 21:11:58 [DEBUG] Looping over page num:15, scraped 357 separate opinion(s)
+2018-05-20 21:12:03 [DEBUG] Looping over page num:16, scraped 382 separate opinion(s)
+2018-05-20 21:12:06 [DEBUG] Looping over page num:17, scraped 407 separate opinion(s)
+2018-05-20 21:12:09 [DEBUG] Looping over page num:18, scraped 432 separate opinion(s)
+2018-05-20 21:12:12 [DEBUG] Looping over page num:19, scraped 455 separate opinion(s)
+2018-05-20 21:12:16 [DEBUG] Looping over page num:20, scraped 478 separate opinion(s)
+2018-05-20 21:12:19 [DEBUG] Looping over page num:21, scraped 503 separate opinion(s)
+2018-05-20 21:12:23 [DEBUG] Looping over page num:22, scraped 527 separate opinion(s)
+2018-05-20 21:12:25 [DEBUG] Looping over page num:23, scraped 552 separate opinion(s)
+2018-05-20 21:12:27 [DEBUG] Looping over page num:24, scraped 566 separate opinion(s)
+2018-05-20 21:12:28 [DEBUG] Looping over page num:25, scraped 566 separate opinion(s)
+2018-05-20 21:12:30 [DEBUG] Looping over page num:26, scraped 566 separate opinion(s)
+2018-05-20 21:12:31 [DEBUG] Looping over page num:27, scraped 566 separate opinion(s)
+2018-05-20 21:12:31 [DEBUG] FINALIZED STEP 2/4, searched for all separate opinions
+5 most common judges by separate opinions:
+
+                           Teresa Liszcz    57 separate opinion(s)
+                    Wojciech Hermeliñski    47 separate opinion(s)
+                        Julia Przy³êbska    30 separate opinion(s)
+                         Miros³aw Granat    30 separate opinion(s)
+                       Marek Kotlinowski    30 separate opinion(s)
+2018-05-20 21:12:31 [DEBUG] FINALIZED STEP 3/4, found 5 most active judges
+2018-05-20 21:12:31 [DEBUG] Starting download of the files
+2018-05-21 00:16:07 [DEBUG] FINALIZED STEP 4/4, saved all files
+2018-05-21 00:16:09 [DEBUG] output\K_12_03\seperate_opinions\02023_K_12_03_Bohdan_Zdziennicki.html  is not downloaded correctly.
+2018-05-21 00:16:54 [DEBUG] 1  files downloaded not correctly,  3127  files downloaded correctly.

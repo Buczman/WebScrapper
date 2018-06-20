@@ -194,7 +194,7 @@ pLogger('log.txt', True, '[DEBUG] Achieved maximum objects per page: ', maxPages
 while True:
 	# hardcoded 0.5s so we are sure that the model showed up (and fortunately hidden)
 	time.sleep(0.5)
-	wait.until_not(EC.visibility_of_element_located((By.ID, "j_idt24_modal")))
+	wait.until_not(EC.visibility_of_element_located((By.ID, "j_idt28_modal")))
 	objectCount = pageCount*500 + 0 # single page iterator
 
 	while True:
@@ -244,7 +244,7 @@ pLogger('log.txt', True, '[DEBUG] Page loaded! ', sepOpinionURL)
 while True:
 	# hardcoded 0.5s so we are sure that the model showed up (and fortunately hidden)
 	time.sleep(0.5)
-	wait.until_not(EC.visibility_of_element_located((By.ID, "j_idt24_modal")))
+	wait.until_not(EC.visibility_of_element_located((By.ID, "j_idt28_modal")))
 	
 	#getting table with all links to separate opinions
 	table = driver.find_element_by_class_name('ui-datatable-tablewrapper')

@@ -2,7 +2,6 @@
 #                   WEBSCRAPPING                    #
 #           POLISH CONSTITUTIONAL TRIBUNAL          #
 #                                                   #
-#         MATEUSZ BUCZYNSKI & OSKAR RYCHLICA        #
 #####################################################
 
 #####################################################
